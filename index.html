@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفكّر - ثانوية الطيبة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #0f172a; --primary: #1e293b; --accent: #fbbf24; }
+        body { margin: 0; background: var(--bg); font-family: 'Cairo', sans-serif; color: white; padding-bottom: 90px; }
+        
+        header { background: linear-gradient(to bottom, var(--primary), var(--bg)); padding: 40px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        
+        /* العدادات */
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 20px; margin-top: -40px; }
+        .stat-card { background: white; color: var(--primary); padding: 10px; border-radius: 15px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .stat-num { display: block; font-size: 1.5rem; font-weight: 900; color: #2563eb; }
+        .stat-lbl { font-size: 0.7rem; font-weight: bold; }
+
+        /* البطاقات */
+        .card { background: white; color: var(--primary); padding: 15px; border-radius: 20px; margin-bottom: 15px; border-right: 6px solid #3b82f6; overflow: hidden; }
+        .card img { width: 100%; border-radius: 10px; margin-top: 10px; }
+        .card iframe { width: 100%; height: 200px; border-radius: 10px; margin-top: 10px; border: none; }
+        
+        /* المكتبة */
+        .subjects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 10px; padding: 10px; }
+        .sub-box { background: var(--primary); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; text-align: center; cursor: pointer; }
+        
+        /* البار السفلي - رجع الزر هنا */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--primary); display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; border-top: 1px solid rgba(255,255,255,0.1); }
+        .nav-btn { background: none; border: none; color: #94a3b8; font-family: 'Cairo'; font-size: 0.8rem; cursor: pointer; text-align: center; }
+        .nav-btn.active { color: var(--accent); font-weight: 900; }
+
+        /* لوحات الإدارة والدخول */
+        #admin-panel { display: none; position: fixed; inset: 0; background: #f8fafc; color: var(--primary); z-index: 4000; padding: 25px; overflow-y: auto; }
+        #auth-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 5000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
+        
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ccc; font-family: 'Cairo'; box-sizing: border-box; }
+        .btn-post { width: 100%; background: #22c55e; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="main-view">
+        <header>
+            <div style="color: var(--accent); font-size: 0.9rem;">ثانوية الطيبة الرسمية</div>
+            <h1 style="margin:0; font-size: 2.2rem; font-weight: 900;">تفكّر</h1>
+        </header>
+
+        <div class="stats-row">
+            <div class="stat-card"><span class="stat-num" id="c-lessons">0</span><span class="stat-lbl">دروس</span></div>
+            <div class="stat-card"><span class="stat-num" id="c-homework">0</span><span class="stat-lbl">فروض</span></div>
+            <div class="stat-card"><span class="stat-num" id="c-exams">0</span><span class="stat-lbl">امتحانات</span></div>
+        </div>
+
+        <div id="content-area" style="padding: 20px;"></div>
+
+        <nav class="nav-bar">
+            <button class="nav-btn active" onclick="showTab('lessons')">📚<br>الدروس</button>
+            <button class="nav-btn" onclick="showTab('homework')">📝<br>الفروض</button>
+            <button class="nav-btn" onclick="showTab('library')">🏛️<br>المكتبة</button>
+            <button class="nav-btn" onclick="checkAdmin()">⚙️<br>الإدارة</button>
+        </nav>
+    </div>
+
+    <div id="auth-overlay">
+        <div style="background:var(--primary); padding:30px; border-radius:25px; text-align:center; border:1px solid var(--accent); width:85%; max-width:400px;">
+            <h2 style="margin-top:0;">التحقق من الهوية</h2>
+            <input type="password" id="admin-code" style="text-align:center; background:#0f172a; color:white; border:none;" placeholder="أدخل كود الإدارة">
+            <button onclick="tryLogin()" style="background:var(--accent); border:none; padding:10px 30px; border-radius:10px; margin-top:15px; font-weight:bold; width:100%;">دخول</button>
+            <button onclick="document.getElementById('auth-overlay').style.display='none'" style="background:none; border:none; color:#ccc; margin-top:10px;">إلغاء</button>
+        </div>
+    </div>
+
+    <div id="admin-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <button onclick="document.getElementById('admin-panel').style.display='none'">🔙 عودة</button>
+            <h2>لوحة التحكم</h2>
+            <button onclick="logout()" style="color:red; border:none; background:none;">خروج</button>
+        </div>
+
+        <div style="background:white; padding:15px; border-radius:15px; margin-top:20px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+            <select id="type"><option value="lessons">درس يومي</option><option value="homework">فرض منزلي</option><option value="exams">امتحان</option><option value="library">ملف للمكتبة</option></select>
+            <select id="subj">
+                <option>عربي</option><option>رياضيات</option><option>فيزياء</option><option>كيمياء</option><option>أحياء</option><option>انكليزي</option><option>كمبيوتر</option><option>تربية</option><option>اجتماع</option><option>اقتصاد</option><option>جغرافيا</option><option>تاريخ</option>
+            </select>
+            <input type="text" id="title" placeholder="عنوان الموضوع...">
+            <textarea id="desc" placeholder="شرح مبسط..."></textarea>
+            
+            <div style="background:#f0f7ff; padding:10px; border-radius:10px; border:1px dashed #2563eb;">
+                <label>🖼️ إضافة صورة:</label><input type="file" id="file-input" accept="image/*">
+                <label>🔗 رابط (يوتيوب/PDF):</label><input type="url" id="link-input" placeholder="انسخ الرابط هنا">
+            </div>
+            
+            <button class="btn-post" onclick="processAndPush()">نشر الآن ✅</button>
+        </div>
+        
+        <h3 style="margin-top:20px;">المحتوى المنشور:</h3>
+        <div id="admin-list"></div>
+    </div>
+
+    <script>
+        let db = JSON.parse(localStorage.getItem('tafakkar_final_v4')) || { lessons: [], homework: [], exams: [], library: [] };
+        let currentTab = 'lessons';
+
+        function showTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            if(event && event.currentTarget.classList) event.currentTarget.classList.add('active');
+            
+            const area = document.getElementById('content-area');
+            area.innerHTML = '';
+
+            if(tab === 'library') {
+                area.innerHTML = '<h2 style="text-align:center">شروحات وملخصات</h2><div class="subjects-grid" id="lib-grid"></div>';
+                const mawaad = ["عربي", "رياضيات", "فيزياء", "كيمياء", "أحياء", "انكليزي", "كمبيوتر", "تربية", "اجتماع", "اقتصاد", "جغرافيا", "تاريخ"];
+                mawaad.forEach(m => {
+                    document.getElementById('lib-grid').innerHTML += `<div class="sub-box" onclick="openSubject('${m}')"><b>${m}</b></div>`;
+                });
+            } else {
+                if(db[tab].length === 0) area.innerHTML = '<p style="text-align:center; opacity:0.5;">لا يوجد محتوى بعد</p>';
+                db[tab].forEach(item => { area.innerHTML += createCard(item); });
+            }
+            updateStats();
+        }
+
+        function createCard(item) {
+            let media = '';
+            if(item.image) media += `<img src="${item.image}">`;
+            if(item.link && (item.link.includes('youtu'))) {
+                let videoId = item.link.split('v=')[1] || item.link.split('/').pop();
+                if(videoId.includes('&')) videoId = videoId.split('&')[0];
+                media += `<iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>`;
+            } else if (item.link) {
+                media += `<a href="${item.link}" target="_blank" style="display:block; margin-top:10px; background:#2563eb; color:white; text-decoration:none; padding:10px; border-radius:8px; text-align:center;">🔗 فتح الملف / الرابط</a>`;
+            }
+
+            return `<div class="card">
+                <small style="background:#f1f5f9; padding:2px 8px; border-radius:5px;">${item.subj}</small>
+                <h3 style="margin:10px 0 5px 0;">${item.title}</h3>
+                <p style="color:#64748b; font-size:0.9rem;">${item.desc}</p>
+                ${media}
+            </div>`;
+        }
+
+        function openSubject(name) {
+            const area = document.getElementById('content-area');
+            const files = db.library.filter(f => f.subj === name);
+            area.innerHTML = `<button onclick="showTab('library')" style="color:var(--accent); background:none; border:none; cursor:pointer;">🔙 عودة</button><h2>مادة ${name}</h2>`;
+            files.forEach(f => { area.innerHTML += createCard(f); });
+        }
+
+        function updateStats() {
+            document.getElementById('c-lessons').innerText = db.lessons.length;
+            document.getElementById('c-homework').innerText = db.homework.length;
+            document.getElementById('c-exams').innerText = db.exams.length;
+        }
+
+        // الإدارة
+        function checkAdmin() {
+            if(localStorage.getItem('isAuth') === 'true') {
+                document.getElementById('admin-panel').style.display = 'block';
+                renderAdminList();
+            } else {
+                document.getElementById('auth-overlay').style.display = 'flex';
+            }
+        }
+
+        function tryLogin() {
+            if(document.getElementById('admin-code').value === "CEO7ALI333") {
+                localStorage.setItem('isAuth', 'true');
+                document.getElementById('auth-overlay').style.display = 'none';
+                checkAdmin();
+            } else { alert("الكود غير صحيح"); }
+        }
+
+        function logout() { localStorage.removeItem('isAuth'); location.reload(); }
+
+        function processAndPush() {
+            const fileInput = document.getElementById('file-input');
+            const type = document.getElementById('type').value;
+            const newItem = {
+                subj: document.getElementById('subj').value,
+                title: document.getElementById('title').value,
+                desc: document.getElementById('desc').value,
+                link: document.getElementById('link-input').value,
+                image: null
+            };
+
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) { newItem.image = e.target.result; saveToDb(type, newItem); };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else { saveToDb(type, newItem); }
+        }
+
+        function saveToDb(type, item) {
+            db[type].push(item);
+            localStorage.setItem('tafakkar_final_v4', JSON.stringify(db));
+            alert("تم النشر!");
+            renderAdminList();
+            updateStats();
+        }
+
+        function renderAdminList() {
+            const list = document.getElementById('admin-list');
+            list.innerHTML = '';
+            ['lessons', 'homework', 'exams', 'library'].forEach(type => {
+                db[type].forEach((item, i) => {
+                    list.innerHTML += `<div style="background:#eee; padding:8px; margin-bottom:5px; border-radius:8px; display:flex; justify-content:space-between; color:black; font-size:0.8rem;">
+                        <span>${item.title}</span>
+                        <button onclick="del('${type}', ${i})" style="color:red; border:none; background:none;">حذف</button>
+                    </div>`;
+                });
+            });
+        }
+
+        function del(t, i) { db[t].splice(i, 1); localStorage.setItem('tafakkar_final_v4', JSON.stringify(db)); renderAdminList(); updateStats(); }
+
+        showTab('lessons');
+    </script>
+</body>
+</html>
