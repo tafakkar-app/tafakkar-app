@@ -16,10 +16,36 @@
         .card { background: white; color: #1e293b; padding: 18px; border-radius: 22px; margin: 12px 18px; border-right: 6px solid #0284c7; }
         .card img { width: 100%; border-radius: 12px; margin-top: 12px; }
         .btn-link { display: block; background: #0284c7; color: white; text-align: center; padding: 12px; border-radius: 12px; text-decoration: none; margin-top: 12px; font-weight: bold; }
+        
+        /* Navigation Bar */
         .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--primary); display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; border-top: 1px solid rgba(255,255,255,0.1); }
         .nav-btn { background: none; border: none; color: #64748b; font-family: 'Cairo'; font-size: 0.75rem; text-align: center; flex: 1; cursor: pointer; }
         .nav-btn.active { color: var(--accent); font-weight: 900; }
+
+        /* Overlays */
         #admin-panel, #schedule-view, #library-view { display: none; position: fixed; inset: 0; background: var(--bg); color: white; z-index: 4000; padding: 20px; overflow-y: auto; }
+        
+        /* زر العودة المحسن والكبير */
+        .btn-back { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center;
+            gap: 8px;
+            color: white; 
+            background: #1e293b; 
+            border: 2px solid #334155; 
+            padding: 12px 24px; 
+            border-radius: 15px; 
+            font-family: 'Cairo'; 
+            font-weight: 900;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+        .btn-back:active { transform: scale(0.95); background: #334155; }
+
         .table-container { overflow-x: auto; margin-top: 15px; border-radius: 12px; }
         table { width: 100%; border-collapse: collapse; background: #1e293b; font-size: 0.85rem; min-width: 450px; }
         th { background: #0f172a; color: var(--accent); padding: 12px; border: 1px solid #334155; }
@@ -29,7 +55,6 @@
         .lib-item { background: #1e293b; padding: 18px; border-radius: 18px; text-align: center; border: 1px solid #334155; color: white; font-weight: bold; cursor: pointer; }
         input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #334155; background: #1e293b; color: white; font-family: 'Cairo'; box-sizing: border-box; }
         .btn-post { width: 100%; background: #0ea5e9; color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 800; }
-        .btn-back { color: var(--text-gray); background: #1e293b; border: 1px solid #334155; padding: 8px 18px; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -43,7 +68,7 @@
         <div class="stats-row">
             <div class="stat-card"><span class="stat-num" id="c-lessons">0</span><span style="font-size:0.75rem; font-weight: bold;">دروس</span></div>
             <div class="stat-card"><span class="stat-num" id="c-homework">0</span><span style="font-size:0.75rem; font-weight: bold;">فروض</span></div>
-            <div class="stat-card"><span class="stat-num" id="c-exams">0</span><span style="font-size:0.75rem; font-weight: bold;">اختبارات</span></div>
+            <div class="stat-card"><span class="stat-num" id="c-exams">0</span><span style="font-size:0.75rem; font-weight: bold;">امتحانات</span></div>
         </div>
 
         <div id="current-section-name" class="section-title">المستجدات التعليمية</div>
@@ -52,6 +77,7 @@
         <nav class="nav-bar">
             <button class="nav-btn active" id="btn-lessons">📚<br>الدروس</button>
             <button class="nav-btn" id="btn-homework">📝<br>الفروض</button>
+            <button class="nav-btn" id="btn-exams">📄<br>الامتحانات</button>
             <button class="nav-btn" id="btn-schedule">📅<br>البرنامج</button>
             <button class="nav-btn" id="btn-library">🏛️<br>المكتبة</button>
             <button class="nav-btn" id="btn-admin">⚙️<br>الإدارة</button>
@@ -59,7 +85,7 @@
     </div>
 
     <div id="schedule-view">
-        <button onclick="closeAll()" class="btn-back">🔙 عودة</button>
+        <button onclick="closeAll()" class="btn-back">🔙 العودة للرئيسية</button>
         <div class="table-container">
             <div class="day-label">الاثنين</div>
             <table><tr><th>الحصة</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>أول ثانوي</td><td>اجتماع</td><td>عربي</td><td>فيزياء</td><td>عربي</td><td>انكليزي</td><td>كيمياء</td><td>انكليزي</td><td>-</td></tr></table>
@@ -73,15 +99,20 @@
     </div>
 
     <div id="library-view">
-        <button onclick="closeAll()" class="btn-back">🔙 عودة</button>
+        <button onclick="closeAll()" class="btn-back">🔙 العودة للمكتبة</button>
         <h3 style="text-align:center;">المواد الدراسية</h3>
         <div class="lib-grid" id="subjects-list"></div>
     </div>
 
     <div id="admin-panel">
-        <button onclick="closeAll()" class="btn-back">🔙 عودة</button>
+        <button onclick="closeAll()" class="btn-back">🔙 لوحة التحكم</button>
         <div style="margin-top:20px;">
-            <select id="post-type"><option value="lessons">درس يومي</option><option value="homework">فرض منزلي</option><option value="exams">اختبار</option><option value="library">المكتبة</option></select>
+            <select id="post-type">
+                <option value="lessons">درس يومي</option>
+                <option value="homework">فرض منزلي</option>
+                <option value="exams">امتحان</option>
+                <option value="library">المكتبة</option>
+            </select>
             <select id="post-subj"></select>
             <input type="text" id="post-title" placeholder="العنوان">
             <textarea id="post-desc" rows="3" placeholder="التفاصيل"></textarea>
@@ -153,8 +184,7 @@
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('btn-' + tab).classList.add('active');
             
-            // إصلاح العنوان عند التبديل
-            const names = { 'lessons': 'الدروس اليومية', 'homework': 'الفروض والمهام', 'exams': 'جدول الاختبارات' };
+            const names = { 'lessons': 'الدروس اليومية', 'homework': 'الفروض والمهام', 'exams': 'جدول الامتحانات' };
             document.getElementById('current-section-name').innerText = names[tab] || 'المستجدات';
 
             onValue(ref(db, 'posts/' + tab), (snap) => {
@@ -178,6 +208,7 @@
 
         document.getElementById('btn-lessons').onclick = () => load('lessons');
         document.getElementById('btn-homework').onclick = () => load('homework');
+        document.getElementById('btn-exams').onclick = () => load('exams');
         document.getElementById('btn-schedule').onclick = () => { closeAll(); document.getElementById('schedule-view').style.display='block'; };
         document.getElementById('btn-library').onclick = () => { closeAll(); document.getElementById('library-view').style.display='block'; };
         document.getElementById('btn-admin').onclick = () => {
@@ -226,4 +257,5 @@
         load('lessons');
     </script>
 </body>
-</html>
+    </html>
+    
