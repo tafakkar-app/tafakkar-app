@@ -13,23 +13,16 @@
         .stat-card { background: white; color: var(--primary); padding: 10px; border-radius: 15px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
         .stat-num { display: block; font-size: 1.5rem; font-weight: 900; color: #2563eb; }
         .stat-lbl { font-size: 0.7rem; font-weight: bold; }
-        
-        /* القسم الحالي */
-        .section-title { padding: 0 20px; margin-top: 10px; font-weight: 900; color: var(--accent); font-size: 1.2rem; }
-        
-        .card { background: white; color: var(--primary); padding: 15px; border-radius: 20px; margin: 10px 20px; border-right: 6px solid #3b82f6; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .card iframe { width: 100%; height: 200px; border-radius: 10px; margin-top: 10px; border: none; }
-        .btn-link { display: block; background: #3b82f6; color: white; text-align: center; padding: 10px; border-radius: 10px; text-decoration: none; margin-top: 10px; font-weight: bold; }
-        
+        .section-title { padding: 0 20px; margin-top: 10px; font-weight: 900; color: var(--accent); font-size: 1.2rem; text-align: center; }
+        .card { background: white; color: var(--primary); padding: 15px; border-radius: 20px; margin: 15px 20px; border-right: 6px solid #3b82f6; position: relative; }
+        .card img { width: 100%; border-radius: 10px; margin-top: 10px; display: block; }
         .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--primary); display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; border-top: 1px solid rgba(255,255,255,0.1); }
-        .nav-btn { background: none; border: none; color: #94a3b8; font-family: 'Cairo'; font-size: 0.8rem; cursor: pointer; text-align: center; transition: 0.3s; }
-        .nav-btn.active { color: var(--accent); font-weight: 900; transform: translateY(-5px); }
-        
+        .nav-btn { background: none; border: none; color: #94a3b8; font-family: 'Cairo'; font-size: 0.8rem; text-align: center; }
+        .nav-btn.active { color: var(--accent); font-weight: 900; }
         #admin-panel { display: none; position: fixed; inset: 0; background: #f8fafc; color: var(--primary); z-index: 4000; padding: 25px; overflow-y: auto; }
-        #auth-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 5000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ccc; font-family: 'Cairo'; box-sizing: border-box; }
-        .btn-post { width: 100%; background: #22c55e; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        
+        #auth-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 5000; justify-content: center; align-items: center; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ccc; font-family: 'Cairo'; }
+        .btn-post { width: 100%; background: #22c55e; color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; margin-top: 10px; }
         .admin-item { background: #fff; padding: 10px; border-radius: 10px; margin-bottom: 10px; border: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
@@ -60,11 +53,10 @@
     </div>
 
     <div id="auth-overlay">
-        <div style="background:var(--primary); padding:30px; border-radius:25px; text-align:center; width:85%; max-width:400px;">
+        <div style="background:var(--primary); padding:30px; border-radius:25px; text-align:center; width:80%;">
             <h2 style="color:white;">دخول الإدارة</h2>
             <input type="password" id="admin-code" placeholder="الكود السري">
-            <button id="do-login" style="background:var(--accent); border:none; padding:10px 30px; border-radius:10px; margin-top:15px; font-weight:bold; width:100%;">دخول</button>
-            <button onclick="document.getElementById('auth-overlay').style.display='none'" style="background:none; border:none; color:gray; margin-top:10px;">إلغاء</button>
+            <button id="do-login" style="background:var(--accent); border:none; padding:10px 30px; border-radius:10px; width:100%; font-weight:bold;">دخول</button>
         </div>
     </div>
 
@@ -72,37 +64,28 @@
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <button onclick="document.getElementById('admin-panel').style.display='none'">🔙 عودة</button>
             <h2 style="margin:0;">لوحة التحكم</h2>
-            <button onclick="localStorage.removeItem('isAdmin'); location.reload();" style="color:red; border:none; background:none;">خروج</button>
         </div>
 
         <div style="background:white; padding:15px; border-radius:15px; margin-top:20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-            <h3>نشر جديد</h3>
-            <select id="post-type">
-                <option value="lessons">درس يومي</option>
-                <option value="homework">فرض منزلي</option>
-                <option value="exams">امتحان</option>
-                <option value="library">المكتبة</option>
-            </select>
+            <select id="post-type"><option value="lessons">درس يومي</option><option value="homework">فرض منزلي</option><option value="exams">امتحان</option><option value="library">المكتبة</option></select>
             <select id="post-subj">
-                <option>عربي</option><option>رياضيات</option><option>فيزياء</option><option>كيمياء</option>
-                <option>أحياء</option><option>انكليزي</option><option>تربية</option><option>اجتماع</option>
-                <option>جغرافيا</option><option>تاريخ</option><option>فلسفة</option>
+                <option>عربي</option><option>انجليزي</option><option>رياضيات</option><option>تربية</option>
+                <option>جغرافيا</option><option>كيمياء</option><option>فيزياء</option><option>علوم احياء</option>
+                <option>معلوماتية</option><option>تاريخ</option><option>اجتماع</option><option>اقتصاد</option>
             </select>
-            <input type="text" id="post-title" placeholder="عنوان الدرس أو الملف">
-            <textarea id="post-desc" placeholder="شرح مبسط..."></textarea>
-            <input type="url" id="post-link" placeholder="رابط فيديو (يوتيوب) أو ملف (Drive/PDF)">
+            <input type="text" id="post-title" placeholder="العنوان">
+            <textarea id="post-desc" placeholder="الشرح..."></textarea>
+            <label style="font-size: 0.8rem; color: #666;">رفع صورة من الهاتف:</label>
+            <input type="file" id="post-image" accept="image/*">
             <button class="btn-post" id="btn-publish">نشر الآن ✅</button>
         </div>
 
-        <div id="admin-list-container" style="margin-top:30px;">
-            <h3>إدارة المنشورات (حذف)</h3>
-            <div id="admin-list"></div>
-        </div>
+        <div id="admin-list" style="margin-top:20px;"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-        import { getDatabase, ref, onValue, push, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+        import { getDatabase, ref, onValue, push, remove } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBk1fE4CYxRclHmCRY2_-dtTDAZIFwAZ_g",
@@ -114,46 +97,26 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-
-        const sectionsMap = {
-            'lessons': 'الدروس اليومية',
-            'homework': 'الفروض والواجبات',
-            'exams': 'الامتحانات والنتائج',
-            'library': 'المكتبة والملخصات'
-        };
+        const sectionsMap = { 'lessons': 'الدروس اليومية', 'homework': 'الفروض والواجبات', 'exams': 'الامتحانات', 'library': 'المكتبة' };
 
         function load(tab) {
-            const area = document.getElementById('content-area');
-            const titleEl = document.getElementById('current-section-name');
-            
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('btn-' + tab).classList.add('active');
-            titleEl.innerText = sectionsMap[tab];
+            document.getElementById('current-section-name').innerText = sectionsMap[tab];
 
             onValue(ref(db, 'posts/' + tab), (snap) => {
+                const area = document.getElementById('content-area');
                 area.innerHTML = '';
                 const data = snap.val();
-                if(!data) { area.innerHTML = '<p style="text-align:center; opacity:0.5; margin-top:50px;">لا يوجد محتوى في هذا القسم بعد.</p>'; return; }
-                
+                if(!data) return;
                 Object.keys(data).reverse().forEach(id => {
                     const item = data[id];
-                    let media = '';
-                    if(item.link && item.link.includes('youtu')) {
-                        let vId = item.link.split('v=')[1] || item.link.split('/').pop();
-                        media = `<iframe src="https://www.youtube.com/embed/${vId}"></iframe>`;
-                    } else if(item.link) {
-                        media = `<a href="${item.link}" target="_blank" class="btn-link">📎 فتح الملف أو الرابط</a>`;
-                    }
-                    
                     area.innerHTML += `
                         <div class="card">
-                            <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:#64748b;">
-                                <span>${item.subj}</span>
-                                <span>${item.date || ''}</span>
-                            </div>
+                            <small style="color:#2563eb;">${item.subj} | ${item.date}</small>
                             <h3 style="margin:5px 0;">${item.title}</h3>
-                            <p style="margin:0; font-size:0.95rem; line-height:1.6;">${item.desc}</p>
-                            ${media}
+                            <p style="margin:0;">${item.desc}</p>
+                            ${item.img ? `<img src="${item.img}">` : ''}
                         </div>`;
                 });
             });
@@ -168,69 +131,61 @@
             });
         }
 
-        // الإدارة
         document.getElementById('btn-admin').onclick = () => {
-            if(localStorage.getItem('isAdmin')) { 
-                document.getElementById('admin-panel').style.display='block'; 
-                loadAdminList(); 
-            } else { 
-                document.getElementById('auth-overlay').style.display='flex'; 
-            }
+            if(localStorage.getItem('isAdmin')) { document.getElementById('admin-panel').style.display='block'; loadAdminList(); }
+            else { document.getElementById('auth-overlay').style.display='flex'; }
         };
 
         document.getElementById('do-login').onclick = () => {
             if(document.getElementById('admin-code').value === "CEO7ALI333") {
                 localStorage.setItem('isAdmin', 'true');
                 location.reload();
-            } else { alert("الكود السري غير صحيح!"); }
+            }
         };
 
-        document.getElementById('btn-publish').onclick = () => {
+        document.getElementById('btn-publish').onclick = async () => {
+            const file = document.getElementById('post-image').files[0];
+            let base64Img = "";
+            if(file) {
+                const reader = new FileReader();
+                base64Img = await new Promise(resolve => {
+                    reader.onload = e => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+            }
+
             const type = document.getElementById('post-type').value;
             const now = new Date();
-            const dateStr = `${now.getDate()}/${now.getMonth()+1}`;
-            
             push(ref(db, 'posts/' + type), {
                 subj: document.getElementById('post-subj').value,
                 title: document.getElementById('post-title').value,
                 desc: document.getElementById('post-desc').value,
-                link: document.getElementById('post-link').value,
-                date: dateStr
-            }).then(() => { 
-                alert("تم النشر بنجاح!"); 
-                document.getElementById('post-title').value = '';
-                document.getElementById('post-desc').value = '';
-                document.getElementById('post-link').value = '';
-            });
+                img: base64Img,
+                date: `${now.getDate()}/${now.getMonth()+1}`
+            }).then(() => { alert("تم النشر!"); location.reload(); });
         };
 
         function loadAdminList() {
-            const list = document.getElementById('admin-list');
             onValue(ref(db, 'posts'), (snap) => {
-                list.innerHTML = '';
-                const all = snap.val();
-                if(!all) return;
+                const list = document.getElementById('admin-list');
+                list.innerHTML = '<h3>حذف الدروس:</h3>';
+                const all = snap.val(); if(!all) return;
                 Object.keys(all).forEach(type => {
                     Object.keys(all[type]).forEach(id => {
-                        list.innerHTML += `
-                            <div class="admin-item">
-                                <div><strong>[${sectionsMap[type]}]</strong><br>${all[type][id].title}</div>
-                                <button onclick="window.delPost('${type}','${id}')" style="background:#fee2e2; color:#ef4444; border:none; padding:8px; border-radius:8px;">حذف 🗑️</button>
-                            </div>`;
+                        list.innerHTML += `<div class="admin-item">
+                            <span>${all[type][id].title}</span>
+                            <button onclick="window.delPost('${type}','${id}')" style="color:red; border:none; background:none;">حذف 🗑️</button>
+                        </div>`;
                     });
                 });
             });
         }
 
-        window.delPost = (type, id) => { if(confirm("هل أنت متأكد من حذف هذا المنشور؟")) remove(ref(db, `posts/${type}/${id}`)); };
-
-        // أزرار التنقل
+        window.delPost = (t, id) => { if(confirm("حذف؟")) remove(ref(db, `posts/${t}/${id}`)); };
         document.getElementById('btn-lessons').onclick = () => load('lessons');
         document.getElementById('btn-homework').onclick = () => load('homework');
         document.getElementById('btn-exams').onclick = () => load('exams');
         document.getElementById('btn-library').onclick = () => load('library');
-
-        // التشغيل الافتراضي
         load('lessons');
     </script>
 </body>
