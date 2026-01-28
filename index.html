@@ -54,22 +54,23 @@
     <div id="admin-panel">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <button onclick="document.getElementById('admin-panel').style.display='none'">🔙 عودة</button>
-            <h2>لوحة التحكم</h2>
+            <h2 style="margin:0;">لوحة التحكم</h2>
         </div>
-        <div style="background:white; padding:15px; border-radius:15px; margin-top:20px;">
+        <div style="background:white; padding:15px; border-radius:15px; margin-top:20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
             <select id="post-type"><option value="lessons">درس يومي</option><option value="homework">فرض منزلي</option><option value="exams">امتحان</option></select>
-            <select id="post-subj"><option>رياضيات</option><option>فيزياء</option><option>كيمياء</option><option>عربي</option></select>
+            <select id="post-subj"><option>عربي</option><option>رياضيات</option><option>فيزياء</option><option>كيمياء</option><option>انكليزي</option></select>
             <input type="text" id="post-title" placeholder="العنوان">
             <textarea id="post-desc" placeholder="الشرح"></textarea>
             <button class="btn-post" id="btn-publish">نشر الآن ✅</button>
         </div>
-        <div id="admin-list" style="margin-top:20px;"></div>
+        <div id="admin-list" style="margin-top:20px; color: black;"></div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
         import { getDatabase, ref, onValue, push, remove } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
 
+        // إعدادات Firebase الخاصة بك
         const firebaseConfig = {
             apiKey: "AIzaSyBk1fE4CYxRclHmCRY2_-dtTDAZIFwAZ_g",
             authDomain: "tafakkar-d6065.firebaseapp.com",
@@ -82,14 +83,17 @@
         const db = getDatabase(app);
 
         function load(tab) {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + tab).classList.add('active');
+            
             onValue(ref(db, 'posts/' + tab), (snap) => {
                 const area = document.getElementById('content-area');
                 area.innerHTML = '';
                 const data = snap.val();
-                if(!data) { area.innerHTML = '<p style="text-align:center;">لا يوجد محتوى بعد</p>'; return; }
+                if(!data) { area.innerHTML = '<p style="text-align:center; opacity:0.5;">لا يوجد محتوى</p>'; return; }
                 Object.keys(data).reverse().forEach(id => {
                     const item = data[id];
-                    area.innerHTML += `<div class="card"><small>${item.subj}</small><h3>${item.title}</h3><p>${item.desc}</p></div>`;
+                    area.innerHTML += `<div class="card"><small style="color:#2563eb; font-weight:bold;">${item.subj}</small><h3>${item.title}</h3><p style="margin:5px 0 0;">${item.desc}</p></div>`;
                 });
             });
             updateCounts();
@@ -108,7 +112,8 @@
             if(document.getElementById('admin-code').value === "CEO7ALI333") {
                 document.getElementById('auth-overlay').style.display='none';
                 document.getElementById('admin-panel').style.display='block';
-            } else { alert("خطأ!"); }
+                loadAdminList();
+            } else { alert("الكود خطأ!"); }
         };
 
         document.getElementById('btn-publish').onclick = () => {
@@ -117,8 +122,26 @@
                 subj: document.getElementById('post-subj').value,
                 title: document.getElementById('post-title').value,
                 desc: document.getElementById('post-desc').value
-            }).then(() => alert("تم النشر!"));
+            }).then(() => { alert("تم النشر!"); document.getElementById('admin-panel').style.display='none'; });
         };
+
+        function loadAdminList() {
+            onValue(ref(db, 'posts'), (snap) => {
+                const list = document.getElementById('admin-list');
+                list.innerHTML = '<h4>حذف المحتوى:</h4>';
+                const all = snap.val(); if(!all) return;
+                Object.keys(all).forEach(type => {
+                    Object.keys(all[type]).forEach(id => {
+                        list.innerHTML += `<div style="background:#ddd; padding:5px; margin-bottom:5px; display:flex; justify-content:space-between;">
+                            <span>${all[type][id].title}</span>
+                            <button onclick="window.delPost('${type}','${id}')" style="color:red; border:none;">حذف</button>
+                        </div>`;
+                    });
+                });
+            });
+        }
+
+        window.delPost = (type, id) => { if(confirm("حذف؟")) remove(ref(db, `posts/${type}/${id}`)); };
 
         document.getElementById('btn-lessons').onclick = () => load('lessons');
         document.getElementById('btn-homework').onclick = () => load('homework');
@@ -127,5 +150,5 @@
         load('lessons');
     </script>
 </body>
-    </html>
-    
+                </html>
+                
