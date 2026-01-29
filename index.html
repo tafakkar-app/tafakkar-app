@@ -6,34 +6,49 @@
     <title>تفكّر - ثانوية الطيبة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0f172a; --primary: #1e293b; --accent: #38bdf8; }
+        :root { --bg: #0f172a; --primary: #1e293b; --accent: #38bdf8; --card-bg: white; --card-text: #1e293b; }
+        
         body { margin: 0; background: var(--bg); font-family: 'Cairo', sans-serif; color: white; padding-bottom: 90px; }
         header { background: linear-gradient(to bottom, var(--primary), var(--bg)); padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 20px; margin-top: -30px; }
-        .stat-card { background: white; color: var(--primary); padding: 12px; border-radius: 18px; text-align: center; }
-        .stat-num { display: block; font-size: 1.5rem; font-weight: 900; color: #1d4ed8; }
-        .section-title { padding: 10px 20px; font-weight: 900; color: var(--accent); font-size: 1.1rem; text-align: center; }
         
-        .card { background: white; color: #1e293b; padding: 18px; border-radius: 22px; margin: 12px 18px; border-right: 6px solid #0284c7; }
-        .card img { width: 100%; border-radius: 12px; margin-top: 10px; cursor: pointer; }
-        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; margin-top: 12px; border-radius: 12px; overflow: hidden; background: #000; }
-        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
-        .btn-link { display: block; background: #0284c7; color: white; text-align: center; padding: 12px; border-radius: 12px; text-decoration: none; margin-top: 12px; font-weight: bold; }
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 20px; margin-top: -30px; }
+        .stat-card { background: white; color: #1e293b; padding: 12px; border-radius: 18px; text-align: center; }
+        .stat-num { display: block; font-size: 1.5rem; font-weight: 900; color: #1d4ed8; }
+        
+        /* البحث في المكتبة فقط */
+        .search-box { padding: 0 20px 15px; display: none; }
+        .search-box input { background: var(--primary); border: 1px solid var(--accent); color: white; border-radius: 12px; padding: 10px; width: 100%; box-sizing: border-box; }
 
+        /* البطاقات */
+        .card { background: var(--card-bg); color: var(--card-text); padding: 18px; border-radius: 22px; margin: 12px 18px; border-right: 6px solid #0284c7; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .card img { width: 100%; border-radius: 12px; margin-top: 10px; cursor: pointer; }
+        
+        /* مشغل الفيديو والـ PDF */
+        .embed-wrapper { position: relative; padding-bottom: 56.25%; height: 0; margin-top: 12px; border-radius: 12px; overflow: hidden; background: #000; }
+        .embed-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+        .pdf-viewer { width: 100%; height: 450px; border-radius: 12px; margin-top: 12px; border: 1px solid #cbd5e1; }
+
+        /* شريط التنقل */
         .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--primary); display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; border-top: 1px solid rgba(255,255,255,0.1); }
         .nav-btn { background: none; border: none; color: #64748b; font-family: 'Cairo'; font-size: 0.75rem; text-align: center; flex: 1; cursor: pointer; }
         .nav-btn.active { color: var(--accent); font-weight: 900; }
         
+        /* الواجهات */
         #admin-panel, #schedule-view, #library-view { display: none; position: fixed; inset: 0; background: var(--bg); color: white; z-index: 4000; padding: 20px; overflow-y: auto; }
-        .btn-back { display: block; width: 100%; background: #1e293b; color: white; border: 2px solid var(--accent); padding: 15px; border-radius: 15px; font-weight: 900; font-size: 1.1rem; cursor: pointer; margin-bottom: 20px; text-align: center; }
+        .btn-back { display: block; width: 100%; background: var(--primary); color: white; border: 2px solid var(--accent); padding: 15px; border-radius: 15px; font-weight: 900; cursor: pointer; margin-bottom: 20px; text-align: center; }
+
+        /* برنامج الحصص */
+        .schedule-table-container { overflow-x: auto; background: var(--primary); border-radius: 15px; padding: 10px; border: 1px solid rgba(255,255,255,0.1); }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; font-size: 0.85rem; }
+        th, td { border: 1px solid #334155; padding: 12px 8px; text-align: center; }
+        th { background: #0f172a; color: var(--accent); }
+        td { background: #1e293b; color: white; }
 
         .lib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .lib-item { background: #1e293b; padding: 25px 10px; border-radius: 20px; text-align: center; border: 1px solid #334155; font-weight: 900; cursor: pointer; }
+        .lib-item { background: var(--primary); padding: 25px 10px; border-radius: 20px; text-align: center; border: 1px solid #334155; font-weight: 900; cursor: pointer; }
         
-        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #334155; background: #1e293b; color: white; font-family: 'Cairo'; box-sizing: border-box; }
+        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #334155; background: var(--primary); color: white; font-family: 'Cairo'; box-sizing: border-box; }
         .btn-post { width: 100%; background: #0ea5e9; color: white; border: none; padding: 18px; border-radius: 12px; font-weight: 800; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; background: #1e293b; min-width: 400px; }
-        th, td { border: 1px solid #334155; padding: 10px; text-align: center; }
     </style>
 </head>
 <body>
@@ -50,7 +65,11 @@
             <div class="stat-card"><span class="stat-num" id="c-exams">0</span><span>امتحانات</span></div>
         </div>
 
-        <div id="current-section-name" class="section-title">المستجدات التعليمية</div>
+        <div id="search-container" class="search-box">
+            <input type="text" id="lib-search-input" placeholder="ابحث في أرشيف المادة..." oninput="filterLibraryResults()">
+        </div>
+
+        <div id="current-section-name" style="text-align:center; padding:10px; font-weight:900; color:var(--accent);">المستجدات التعليمية</div>
         <div id="content-area"></div>
 
         <nav class="nav-bar">
@@ -63,21 +82,27 @@
         </nav>
     </div>
 
-    <div id="schedule-view">
-        <button onclick="closeAll()" class="btn-back">🔙 العودة</button>
-        <div style="overflow-x:auto;">
-            <table><tr><th>اليوم</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
-            <tr><td>الاثنين</td><td>اجتماع</td><td>عربي</td><td>فيزياء</td><td>عربي</td><td>انكليزي</td><td>كيمياء</td><td>انكليزي</td><td>-</td></tr>
-            <tr><td>الثلاثاء</td><td>رياضيات</td><td>رياضيات</td><td>عربي</td><td>كيمياء</td><td>اقتصاد</td><td>فيزياء</td><td>انكليزي</td><td>-</td></tr>
-            <tr><td>الأربعاء</td><td>علوم</td><td>علوم</td><td>جغرافيا</td><td>عربي</td><td>رياضيات</td><td>رياضيات</td><td>تاريخ</td><td>جغرافيا</td></tr>
-            <tr><td>الخميس</td><td>-</td><td>تربية</td><td>عربي</td><td>فيزياء</td><td>انكليزي</td><td>انكليزي</td><td>معلوماتية</td><td>رياضيات</td></tr>
-            </table>
-        </div>
-    </div>
-
     <div id="library-view">
         <button onclick="closeAll()" class="btn-back">🔙 العودة</button>
         <div class="lib-grid" id="subjects-list"></div>
+    </div>
+
+    <div id="schedule-view">
+        <button onclick="closeAll()" class="btn-back">🔙 العودة للرئيسية</button>
+        <h3 style="text-align:center; color:var(--accent)">البرنامج الأسبوعي للحصص</h3>
+        <div class="schedule-table-container">
+            <table>
+                <thead>
+                    <tr><th>اليوم</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>الاثنين</td><td>اجتماع</td><td>عربي</td><td>فيزياء</td><td>عربي</td><td>انكليزي</td><td>كيمياء</td><td>انكليزي</td><td>-</td></tr>
+                    <tr><td>الثلاثاء</td><td>رياضيات</td><td>رياضيات</td><td>عربي</td><td>كيمياء</td><td>اقتصاد</td><td>فيزياء</td><td>انكليزي</td><td>-</td></tr>
+                    <tr><td>الأربعاء</td><td>علوم</td><td>علوم</td><td>جغرافيا</td><td>عربي</td><td>رياضيات</td><td>رياضيات</td><td>تاريخ</td><td>جغرافيا</td></tr>
+                    <tr><td>الخميس</td><td>تربية</td><td>تربية</td><td>عربي</td><td>فيزياء</td><td>انكليزي</td><td>انكليزي</td><td>معلوماتية</td><td>رياضيات</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div id="admin-panel">
@@ -93,11 +118,10 @@
             <input type="date" id="post-date-picker">
             <input type="text" id="post-title" placeholder="العنوان">
             <textarea id="post-desc" rows="3" placeholder="التفاصيل..."></textarea>
-            <input type="url" id="post-url" placeholder="رابط يوتيوب أو ملف">
+            <input type="url" id="post-url" placeholder="رابط يوتيوب أو PDF">
             <input type="file" id="post-image" accept="image/*">
             <button class="btn-post" id="btn-publish">نشر المحتوى 🚀</button>
         </div>
-        <div id="admin-list" style="margin-top:20px;"></div>
     </div>
 
     <script type="module">
@@ -123,39 +147,52 @@
             adminSubj.innerHTML += `<option>${s}</option>`;
         });
 
-        window.closeAll = () => { document.querySelectorAll('#schedule-view, #library-view, #admin-panel').forEach(el => el.style.display='none'); }
+        window.closeAll = () => { 
+            document.querySelectorAll('#schedule-view, #library-view, #admin-panel').forEach(el => el.style.display='none');
+            document.getElementById('search-container').style.display = 'none';
+        }
 
-        // الحل النهائي: الأرشيف يقرأ فقط من قسم 'library' في قاعدة البيانات
+        let currentLibData = [];
         window.loadBySubject = (subj) => {
             closeAll();
             document.getElementById('current-section-name').innerText = "أرشيف مادة " + subj;
+            document.getElementById('search-container').style.display = 'block';
             onValue(ref(db, 'posts/library'), (snap) => {
                 const area = document.getElementById('content-area'); area.innerHTML = '';
                 const data = snap.val(); if(!data) return;
-                Object.keys(data).forEach(id => {
-                    if(data[id].subj === subj) renderCard(data[id], area);
-                });
+                currentLibData = Object.values(data).filter(item => item.subj === subj);
+                currentLibData.forEach(item => renderCard(item, area));
+            });
+        }
+
+        window.filterLibraryResults = () => {
+            const query = document.getElementById('lib-search-input').value.toLowerCase();
+            const area = document.getElementById('content-area'); area.innerHTML = '';
+            currentLibData.forEach(item => {
+                if(item.title.toLowerCase().includes(query) || item.desc.toLowerCase().includes(query)) renderCard(item, area);
             });
         }
 
         function getYTID(url) {
             const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-            const match = url.match(regExp);
+            const match = url?.match(regExp);
             return (match && match[2].length === 11) ? match[2] : null;
         }
 
         function renderCard(item, container) {
             let media = '';
-            const ytId = item.url ? getYTID(item.url) : null;
-            if (ytId) media = `<div class="video-wrapper"><iframe src="https://www.youtube.com/embed/${ytId}" allowfullscreen></iframe></div>`;
-            else if (item.url) media = `<a href="${item.url}" target="_blank" class="btn-link">🔗 فتح الرابط المرفق</a>`;
+            const ytId = getYTID(item.url);
+            if (ytId) media = `<div class="embed-wrapper"><iframe src="https://www.youtube.com/embed/${ytId}" allowfullscreen></iframe></div>`;
+            else if (item.url && item.url.toLowerCase().endsWith('.pdf')) {
+                media = `<iframe src="${item.url}" class="pdf-viewer"></iframe><a href="${item.url}" target="_blank" class="btn-link">📄 فتح PDF</a>`;
+            } else if (item.url) media = `<a href="${item.url}" target="_blank" class="btn-link">🔗 فتح الرابط</a>`;
 
             container.innerHTML += `<div class="card">
                 <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#64748b; font-weight:bold; margin-bottom:8px;">
                     <span style="color:#0284c7;">${item.subj}</span><span>${item.dateDisplay || ''}</span>
                 </div>
                 <h3 style="margin:0;">${item.title}</h3>
-                <p style="margin:5px 0; font-size:0.9rem; color:#475569;">${item.desc}</p>
+                <p style="margin:5px 0; font-size:0.9rem;">${item.desc}</p>
                 ${item.img ? `<img src="${item.img}" onclick="window.open(this.src)">` : ''}
                 ${media}
             </div>`;
@@ -165,8 +202,7 @@
             closeAll();
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('btn-' + tab).classList.add('active');
-            const titles = {'lessons':'الدروس اليومية','homework':'الفروض المنزلية','exams':'الامتحانات'};
-            document.getElementById('current-section-name').innerText = titles[tab];
+            document.getElementById('current-section-name').innerText = tab === 'lessons' ? 'الدروس اليومية' : tab === 'homework' ? 'الفروض المنزلية' : 'الامتحانات';
             onValue(ref(db, 'posts/' + tab), (snap) => {
                 const area = document.getElementById('content-area'); area.innerHTML = '';
                 const data = snap.val(); if(!data) return;
@@ -185,13 +221,8 @@
         }
 
         document.getElementById('btn-admin').onclick = () => {
-            if(localStorage.getItem('isAdmin')) { 
-                closeAll(); document.getElementById('admin-panel').style.display='block'; 
-                document.getElementById('post-date-picker').value = new Date().toISOString().split('T')[0];
-                loadAdminList();
-            } else { 
-                let code = prompt("الرمز:"); if(code === "CEO7ALI333") { localStorage.setItem('isAdmin','true'); location.reload(); }
-            }
+            if(localStorage.getItem('isAdmin')) { closeAll(); document.getElementById('admin-panel').style.display='block'; }
+            else { let code = prompt("الرمز:"); if(code === "CEO7ALI333") { localStorage.setItem('isAdmin','true'); location.reload(); } }
         };
 
         document.getElementById('btn-publish').onclick = async () => {
@@ -201,10 +232,9 @@
                 const reader = new FileReader();
                 base64 = await new Promise(r => { reader.onload = e => r(e.target.result); reader.readAsDataURL(file); });
             }
-            const dateInput = document.getElementById('post-date-picker').value;
-            const d = new Date(dateInput || new Date());
+            const dInput = document.getElementById('post-date-picker').value;
+            const d = dInput ? new Date(dInput) : new Date();
             const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-            
             push(ref(db, 'posts/' + document.getElementById('post-type').value), {
                 subj: document.getElementById('post-subj').value,
                 title: document.getElementById('post-title').value,
@@ -215,22 +245,6 @@
             }).then(() => { alert("تم النشر!"); location.reload(); });
         };
 
-        function loadAdminList() {
-            onValue(ref(db, 'posts'), (snap) => {
-                const list = document.getElementById('admin-list'); list.innerHTML = '<h4>حذف المنشورات:</h4>';
-                const all = snap.val(); if(!all) return;
-                Object.keys(all).forEach(type => {
-                    Object.keys(all[type]).forEach(id => {
-                        list.innerHTML += `<div style="background:#1e293b; padding:10px; margin-bottom:5px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; font-size:0.8rem;">
-                            <span>[${type}] ${all[type][id].title}</span>
-                            <button onclick="window.delPost('${type}','${id}')" style="color:#f87171; background:none; border:none; cursor:pointer;">حذف</button>
-                        </div>`;
-                    });
-                });
-            });
-        }
-
-        window.delPost = (t, id) => { if(confirm("حذف؟")) remove(ref(db, `posts/${t}/${id}`)); };
         document.getElementById('btn-lessons').onclick = () => load('lessons');
         document.getElementById('btn-homework').onclick = () => load('homework');
         document.getElementById('btn-exams').onclick = () => load('exams');
@@ -239,5 +253,5 @@
         load('lessons');
     </script>
 </body>
-    </html>
+                                        </html>
     
