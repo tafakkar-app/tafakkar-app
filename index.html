@@ -9,41 +9,31 @@
         :root { --bg: #0f172a; --primary: #1e293b; --accent: #38bdf8; }
         body { margin: 0; background: var(--bg); font-family: 'Cairo', sans-serif; color: white; padding-bottom: 90px; }
         header { background: linear-gradient(to bottom, var(--primary), var(--bg)); padding: 30px 20px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); }
-        
         .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 20px; margin-top: -30px; }
-        .stat-card { background: white; color: var(--primary); padding: 12px; border-radius: 18px; text-align: center; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        .stat-card { background: white; color: var(--primary); padding: 12px; border-radius: 18px; text-align: center; }
         .stat-num { display: block; font-size: 1.5rem; font-weight: 900; color: #1d4ed8; }
-        
         .section-title { padding: 10px 20px; font-weight: 900; color: var(--accent); font-size: 1.1rem; text-align: center; }
         
-        /* البطاقات المحسنة لفتح الصور */
         .card { background: white; color: #1e293b; padding: 18px; border-radius: 22px; margin: 12px 18px; border-right: 6px solid #0284c7; }
-        .card img { width: 100%; border-radius: 12px; margin-top: 12px; cursor: pointer; transition: 0.3s; }
-        .card img:active { transform: scale(1.05); }
+        .card img { width: 100%; border-radius: 12px; margin-top: 10px; cursor: pointer; }
+        .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; margin-top: 12px; border-radius: 12px; overflow: hidden; background: #000; }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
         .btn-link { display: block; background: #0284c7; color: white; text-align: center; padding: 12px; border-radius: 12px; text-decoration: none; margin-top: 12px; font-weight: bold; }
 
-        /* الأزرار السفلية */
         .nav-bar { position: fixed; bottom: 0; width: 100%; background: var(--primary); display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; border-top: 1px solid rgba(255,255,255,0.1); }
         .nav-btn { background: none; border: none; color: #64748b; font-family: 'Cairo'; font-size: 0.75rem; text-align: center; flex: 1; cursor: pointer; }
         .nav-btn.active { color: var(--accent); font-weight: 900; }
-
-        /* الشاشات المنبثقة */
-        #admin-panel, #schedule-view, #library-view { display: none; position: fixed; inset: 0; background: var(--bg); color: white; z-index: 4000; padding: 20px; overflow-y: auto; }
         
+        #admin-panel, #schedule-view, #library-view { display: none; position: fixed; inset: 0; background: var(--bg); color: white; z-index: 4000; padding: 20px; overflow-y: auto; }
         .btn-back { display: block; width: 100%; background: #1e293b; color: white; border: 2px solid var(--accent); padding: 15px; border-radius: 15px; font-weight: 900; font-size: 1.1rem; cursor: pointer; margin-bottom: 20px; text-align: center; }
 
-        /* جداول البرنامج */
-        .table-container { overflow-x: auto; margin-bottom: 20px; border-radius: 12px; }
-        table { width: 100%; border-collapse: collapse; background: #1e293b; min-width: 400px; }
-        th, td { border: 1px solid #334155; padding: 12px; text-align: center; }
-        th { background: #0f172a; color: var(--accent); }
-
-        /* شبكة المكتبة الأصيلة */
         .lib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .lib-item { background: #1e293b; padding: 25px 10px; border-radius: 20px; text-align: center; border: 1px solid #334155; color: white; font-weight: 900; cursor: pointer; font-size: 1.1rem; }
-
-        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #334155; background: #1e293b; color: white; font-family: 'Cairo'; }
-        .btn-post { width: 100%; background: #0ea5e9; color: white; border: none; padding: 18px; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 1.1rem; }
+        .lib-item { background: #1e293b; padding: 25px 10px; border-radius: 20px; text-align: center; border: 1px solid #334155; font-weight: 900; cursor: pointer; }
+        
+        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #334155; background: #1e293b; color: white; font-family: 'Cairo'; box-sizing: border-box; }
+        .btn-post { width: 100%; background: #0ea5e9; color: white; border: none; padding: 18px; border-radius: 12px; font-weight: 800; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; background: #1e293b; min-width: 400px; }
+        th, td { border: 1px solid #334155; padding: 10px; text-align: center; }
     </style>
 </head>
 <body>
@@ -74,32 +64,36 @@
     </div>
 
     <div id="schedule-view">
-        <button onclick="closeAll()" class="btn-back">🔙 العودة للقائمة</button>
-        <div class="table-container">
-            <h3 style="color:var(--accent)">الاثنين</h3>
-            <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>اجتماع</td><td>عربي</td><td>فيزياء</td><td>عربي</td><td>انكليزي</td><td>كيمياء</td><td>انكليزي</td><td>-</td></tr></table>
-            <h3 style="color:var(--accent); margin-top:15px;">الثلاثاء</h3>
-            <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>رياضيات</td><td>رياضيات</td><td>عربي</td><td>كيمياء</td><td>اقتصاد</td><td>فيزياء</td><td>انكليزي</td><td>-</td></tr></table>
-            <h3 style="color:var(--accent); margin-top:15px;">الأربعاء</h3>
-            <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>علوم</td><td>علوم</td><td>جغرافيا</td><td>عربي</td><td>رياضيات</td><td>رياضيات</td><td>تاريخ</td><td style="color:var(--accent);">جغرافيا</td></tr></table>
-            <h3 style="color:var(--accent); margin-top:15px;">الخميس</h3>
-            <table><tr><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>-</td><td>تربية</td><td>عربي</td><td>فيزياء</td><td>انكليزي</td><td>انكليزي</td><td>معلوماتية</td><td style="color:var(--accent);">رياضيات</td></tr></table>
+        <button onclick="closeAll()" class="btn-back">🔙 العودة</button>
+        <div style="overflow-x:auto;">
+            <table><tr><th>اليوم</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
+            <tr><td>الاثنين</td><td>اجتماع</td><td>عربي</td><td>فيزياء</td><td>عربي</td><td>انكليزي</td><td>كيمياء</td><td>انكليزي</td><td>-</td></tr>
+            <tr><td>الثلاثاء</td><td>رياضيات</td><td>رياضيات</td><td>عربي</td><td>كيمياء</td><td>اقتصاد</td><td>فيزياء</td><td>انكليزي</td><td>-</td></tr>
+            <tr><td>الأربعاء</td><td>علوم</td><td>علوم</td><td>جغرافيا</td><td>عربي</td><td>رياضيات</td><td>رياضيات</td><td>تاريخ</td><td>جغرافيا</td></tr>
+            <tr><td>الخميس</td><td>-</td><td>تربية</td><td>عربي</td><td>فيزياء</td><td>انكليزي</td><td>انكليزي</td><td>معلوماتية</td><td>رياضيات</td></tr>
+            </table>
         </div>
     </div>
 
     <div id="library-view">
-        <button onclick="closeAll()" class="btn-back">🔙 العودة للقائمة</button>
+        <button onclick="closeAll()" class="btn-back">🔙 العودة</button>
         <div class="lib-grid" id="subjects-list"></div>
     </div>
 
     <div id="admin-panel">
-        <button onclick="closeAll()" class="btn-back">🔙 الخروج من الإدارة</button>
+        <button onclick="closeAll()" class="btn-back">🔙 خروج</button>
         <div style="background:var(--primary); padding:15px; border-radius:18px;">
-            <select id="post-type"><option value="lessons">درس يومي</option><option value="homework">فرض منزلي</option><option value="exams">امتحان</option><option value="library">المكتبة</option></select>
+            <select id="post-type">
+                <option value="lessons">درس يومي 📚</option>
+                <option value="homework">فرض منزلي 📝</option>
+                <option value="exams">امتحان 📄</option>
+                <option value="library">المكتبة (أرشيف ثابت) 🏛️</option>
+            </select>
             <select id="post-subj"></select>
-            <input type="date" id="post-date-picker"> <input type="text" id="post-title" placeholder="العنوان">
-            <textarea id="post-desc" rows="3" placeholder="التفاصيل"></textarea>
-            <input type="url" id="post-url" placeholder="رابط فيديو أو ملف (اختياري)">
+            <input type="date" id="post-date-picker">
+            <input type="text" id="post-title" placeholder="العنوان">
+            <textarea id="post-desc" rows="3" placeholder="التفاصيل..."></textarea>
+            <input type="url" id="post-url" placeholder="رابط يوتيوب أو ملف">
             <input type="file" id="post-image" accept="image/*">
             <button class="btn-post" id="btn-publish">نشر المحتوى 🚀</button>
         </div>
@@ -131,32 +125,39 @@
 
         window.closeAll = () => { document.querySelectorAll('#schedule-view, #library-view, #admin-panel').forEach(el => el.style.display='none'); }
 
+        // الحل النهائي: الأرشيف يقرأ فقط من قسم 'library' في قاعدة البيانات
         window.loadBySubject = (subj) => {
             closeAll();
-            document.getElementById('current-section-name').innerText = "أرشيف " + subj;
-            onValue(ref(db, 'posts'), (snap) => {
+            document.getElementById('current-section-name').innerText = "أرشيف مادة " + subj;
+            onValue(ref(db, 'posts/library'), (snap) => {
                 const area = document.getElementById('content-area'); area.innerHTML = '';
-                const all = snap.val(); if(!all) return;
-                Object.keys(all).forEach(type => {
-                    Object.keys(all[type]).forEach(id => { if(all[type][id].subj === subj) renderCard(all[type][id], area); });
+                const data = snap.val(); if(!data) return;
+                Object.keys(data).forEach(id => {
+                    if(data[id].subj === subj) renderCard(data[id], area);
                 });
             });
         }
 
+        function getYTID(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
         function renderCard(item, container) {
-            // تصحيح: الصورة تفتح في صفحة جديدة عند الضغط عليها، والروابط تعمل بشكل سليم
-            let media = item.img ? `<img src="${item.img}" onclick="window.open(this.src, '_blank')">` : '';
-            let videoBtn = item.url ? `<a href="${item.url}" target="_blank" class="btn-link">📺 فتح الرابط / الفيديو</a>` : '';
-            
+            let media = '';
+            const ytId = item.url ? getYTID(item.url) : null;
+            if (ytId) media = `<div class="video-wrapper"><iframe src="https://www.youtube.com/embed/${ytId}" allowfullscreen></iframe></div>`;
+            else if (item.url) media = `<a href="${item.url}" target="_blank" class="btn-link">🔗 فتح الرابط المرفق</a>`;
+
             container.innerHTML += `<div class="card">
-                <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:8px; color:#64748b; font-weight:bold;">
-                    <span style="color:#0284c7;">${item.subj}</span>
-                    <span>${item.dateDisplay || ''}</span>
+                <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:#64748b; font-weight:bold; margin-bottom:8px;">
+                    <span style="color:#0284c7;">${item.subj}</span><span>${item.dateDisplay || ''}</span>
                 </div>
                 <h3 style="margin:0;">${item.title}</h3>
-                <p style="margin:5px 0; font-size:0.95rem; color:#475569;">${item.desc}</p>
+                <p style="margin:5px 0; font-size:0.9rem; color:#475569;">${item.desc}</p>
+                ${item.img ? `<img src="${item.img}" onclick="window.open(this.src)">` : ''}
                 ${media}
-                ${videoBtn}
             </div>`;
         }
 
@@ -164,8 +165,8 @@
             closeAll();
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('btn-' + tab).classList.add('active');
-            const names = { 'lessons': 'الدروس اليومية', 'homework': 'الفروض والمهام', 'exams': 'الامتحانات' };
-            document.getElementById('current-section-name').innerText = names[tab];
+            const titles = {'lessons':'الدروس اليومية','homework':'الفروض المنزلية','exams':'الامتحانات'};
+            document.getElementById('current-section-name').innerText = titles[tab];
             onValue(ref(db, 'posts/' + tab), (snap) => {
                 const area = document.getElementById('content-area'); area.innerHTML = '';
                 const data = snap.val(); if(!data) return;
@@ -176,52 +177,53 @@
 
         function updateCounts() {
             ['lessons', 'homework', 'exams'].forEach(t => {
-                onValue(ref(db, 'posts/' + t), s => { document.getElementById('c-' + t).innerText = s.exists() ? Object.keys(s.val()).length : 0; });
+                onValue(ref(db, 'posts/' + t), s => { 
+                    const el = document.getElementById('c-' + t);
+                    if(el) el.innerText = s.exists() ? Object.keys(s.val()).length : 0; 
+                });
             });
         }
 
-        document.getElementById('btn-schedule').onclick = () => { closeAll(); document.getElementById('schedule-view').style.display='block'; };
-        document.getElementById('btn-library').onclick = () => { closeAll(); document.getElementById('library-view').style.display='block'; };
         document.getElementById('btn-admin').onclick = () => {
             if(localStorage.getItem('isAdmin')) { 
                 closeAll(); document.getElementById('admin-panel').style.display='block'; 
                 document.getElementById('post-date-picker').value = new Date().toISOString().split('T')[0];
-                loadAdminList(); 
+                loadAdminList();
             } else { 
-                let code = prompt("رمز الإدارة:"); if(code === "CEO7ALI333") { localStorage.setItem('isAdmin', 'true'); location.reload(); }
+                let code = prompt("الرمز:"); if(code === "CEO7ALI333") { localStorage.setItem('isAdmin','true'); location.reload(); }
             }
         };
 
         document.getElementById('btn-publish').onclick = async () => {
             const file = document.getElementById('post-image').files[0];
             let base64 = "";
-            if(file) { 
-                const reader = new FileReader(); 
-                base64 = await new Promise(res => { reader.onload = e => res(e.target.result); reader.readAsDataURL(file); }); 
+            if(file) {
+                const reader = new FileReader();
+                base64 = await new Promise(r => { reader.onload = e => r(e.target.result); reader.readAsDataURL(file); });
             }
-            const d = new Date(document.getElementById('post-date-picker').value);
-            const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-            const formattedDate = `${days[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`;
-
+            const dateInput = document.getElementById('post-date-picker').value;
+            const d = new Date(dateInput || new Date());
+            const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+            
             push(ref(db, 'posts/' + document.getElementById('post-type').value), {
                 subj: document.getElementById('post-subj').value,
-                dateDisplay: formattedDate,
                 title: document.getElementById('post-title').value,
                 desc: document.getElementById('post-desc').value,
                 url: document.getElementById('post-url').value,
-                img: base64
-            }).then(() => { alert("تم!"); location.reload(); });
+                img: base64,
+                dateDisplay: `${days[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`
+            }).then(() => { alert("تم النشر!"); location.reload(); });
         };
 
         function loadAdminList() {
             onValue(ref(db, 'posts'), (snap) => {
-                const list = document.getElementById('admin-list'); list.innerHTML = '<h3>المنشورات:</h3>';
+                const list = document.getElementById('admin-list'); list.innerHTML = '<h4>حذف المنشورات:</h4>';
                 const all = snap.val(); if(!all) return;
                 Object.keys(all).forEach(type => {
                     Object.keys(all[type]).forEach(id => {
-                        list.innerHTML += `<div style="background:#1e293b; padding:10px; margin-bottom:5px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;">
-                            <span style="font-size:0.8rem;">${all[type][id].title}</span>
-                            <button onclick="window.delPost('${type}','${id}')" style="color:#f87171; border:none; background:none;">حذف</button>
+                        list.innerHTML += `<div style="background:#1e293b; padding:10px; margin-bottom:5px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; font-size:0.8rem;">
+                            <span>[${type}] ${all[type][id].title}</span>
+                            <button onclick="window.delPost('${type}','${id}')" style="color:#f87171; background:none; border:none; cursor:pointer;">حذف</button>
                         </div>`;
                     });
                 });
@@ -232,8 +234,10 @@
         document.getElementById('btn-lessons').onclick = () => load('lessons');
         document.getElementById('btn-homework').onclick = () => load('homework');
         document.getElementById('btn-exams').onclick = () => load('exams');
+        document.getElementById('btn-schedule').onclick = () => { closeAll(); document.getElementById('schedule-view').style.display='block'; };
+        document.getElementById('btn-library').onclick = () => { closeAll(); document.getElementById('library-view').style.display='block'; };
         load('lessons');
     </script>
 </body>
-        </html>
-        
+    </html>
+    
