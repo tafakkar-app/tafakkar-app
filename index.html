@@ -22,13 +22,14 @@
         .nav-btn.active { color: var(--accent); font-weight: 900; }
         .btn-back { display: block; width: 100%; background: var(--primary); color: white; border: 2px solid var(--accent); padding: 15px; border-radius: 15px; font-weight: 900; cursor: pointer; margin-bottom: 20px; text-align: center; }
         .btn-link-action { display: block; width: 100%; background: #0284c7; color: white; padding: 15px; border-radius: 12px; text-align: center; text-decoration: none; font-weight: bold; margin-top: 15px; }
-        .btn-del { background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 8px; font-size: 0.7rem; cursor: pointer; margin-top: 10px; }
+        .btn-del { background: #ef4444; color: white; border: none; padding: 8px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; width: 100%; margin-top: 10px; font-weight: bold; }
         input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px; border: 1px solid #334155; background: var(--primary); color: white; font-family: 'Cairo'; box-sizing: border-box; }
         .btn-post { width: 100%; background: #0ea5e9; color: white; border: none; padding: 18px; border-radius: 12px; font-weight: 800; cursor: pointer; }
         .lib-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .lib-item { background: var(--primary); padding: 25px 10px; border-radius: 20px; text-align: center; border: 1px solid #334155; font-weight: 900; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; background: #1e293b; color: white; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; background: #1e293b; color: white; font-size: 0.85rem; }
         th, td { border: 1px solid #334155; padding: 12px 8px; text-align: center; }
+        th { background: #0284c7; color: white; }
     </style>
 </head>
 <body>
@@ -55,11 +56,25 @@
 
     <div id="details-view"><button onclick="closeAll()" class="btn-back">🔙 عودة</button><div id="details-body"></div></div>
     <div id="library-view"><button onclick="closeAll()" class="btn-back">🔙 العودة</button><div class="lib-grid" id="lib-subs"></div></div>
-    <div id="schedule-view"><button onclick="closeAll()" class="btn-back">🔙 العودة</button><div style="overflow-x:auto;"><table><tr><th>اليوم</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>الاثنين</td><td>اجتماع</td><td>عربي</td><td>فيزياء</td><td>عربي</td><td>انكليزي</td><td>كيمياء</td><td>انكليزي</td><td>-</td></tr><tr><td>الثلاثاء</td><td>رياضيات</td><td>رياضيات</td><td>عربي</td><td>كيمياء</td><td>اقتصاد</td><td>فيزياء</td><td>انكليزي</td><td>-</td></tr><tr><td>الأربعاء</td><td>علوم</td><td>علوم</td><td>جغرافيا</td><td>عربي</td><td>رياضيات</td><td>رياضيات</td><td>تاريخ</td><td>جغرافيا</td></tr><tr><td>الخميس</td><td>تربية</td><td>تربية</td><td>عربي</td><td>فيزياء</td><td>انكليزي</td><td>انكليزي</td><td>معلوماتية</td><td>رياضيات</td></tr></table></div></div>
+    
+    <div id="schedule-view">
+        <button onclick="closeAll()" class="btn-back">🔙 العودة</button>
+        <h2 style="text-align:center; color:var(--accent);">البرنامج الدراسي الأسبوعي</h2>
+        <div style="overflow-x:auto; background:#1e293b; padding:10px; border-radius:15px;">
+            <table>
+                <tr><th>اليوم</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
+                <tr><td>الاثنين</td><td>اجتماع</td><td>عربي</td><td>فيزياء</td><td>عربي</td><td>انكليزي</td><td>كيمياء</td><td>انكليزي</td><td>-</td></tr>
+                <tr><td>الثلاثاء</td><td>رياضيات</td><td>رياضيات</td><td>عربي</td><td>كيمياء</td><td>اقتصاد</td><td>فيزياء</td><td>انكليزي</td><td>-</td></tr>
+                <tr><td>الأربعاء</td><td>علوم</td><td>علوم</td><td>جغرافيا</td><td>عربي</td><td>رياضيات</td><td>رياضيات</td><td>تاريخ</td><td>جغرافيا</td></tr>
+                <tr><td>الخميس</td><td>تربية</td><td>تربية</td><td>عربي</td><td>فيزياء</td><td>انكليزي</td><td>انكليزي</td><td>معلوماتية</td><td>رياضيات</td></tr>
+            </table>
+        </div>
+    </div>
 
     <div id="admin-panel">
         <button onclick="closeAll()" class="btn-back">🔙 خروج</button>
         <div style="background:var(--primary); padding:15px; border-radius:18px;">
+            <h3 style="margin-top:0; color:var(--accent);">نشر جديد</h3>
             <select id="p-type"><option value="lessons">درس يومي</option><option value="homework">فرض منزلي</option><option value="exams">امتحان</option><option value="library">المكتبة</option></select>
             <select id="p-subj"></select>
             <input type="date" id="p-date">
@@ -68,8 +83,14 @@
             <input type="url" id="p-url" placeholder="رابط Google Drive">
             <button class="btn-post" id="btn-pub">🚀 نشر الآن</button>
         </div>
-        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #334155;">
-        <h3 style="text-align:center; color:var(--accent);">إدارة المنشورات الحالية</h3>
+        <hr style="margin: 25px 0; border: 0; border-top: 1px solid #334155;">
+        <h3 style="text-align:center; color:#ef4444;">إدارة وحذف المنشورات</h3>
+        <select id="admin-filter-type" style="border-color:#ef4444;" onchange="loadAdminList()">
+            <option value="lessons">الدروس اليومية</option>
+            <option value="homework">الفروض المنزلية</option>
+            <option value="exams">الامتحانات</option>
+            <option value="library">المكتبة (الأرشيف)</option>
+        </select>
         <div id="admin-list"></div>
     </div>
 
@@ -89,7 +110,6 @@
         const db = getDatabase(app);
         const subjects = ["عربي", "انجليزي", "رياضيات", "تربية", "جغرافيا", "كيمياء", "فيزياء", "علوم احياء", "معلوماتية", "تاريخ", "اجتماع", "اقتصاد"];
         let currentSubData = [];
-        let currentType = 'lessons';
 
         subjects.forEach(s => {
             document.getElementById('lib-subs').innerHTML += `<div class="lib-item" onclick="loadBySub('${s}')">${s}</div>`;
@@ -102,22 +122,26 @@
         }
 
         window.deletePost = (type, id) => {
-            if(confirm("هل أنت متأكد من حذف هذا المنشور؟")) {
-                remove(ref(db, `posts/${type}/${id}`)).then(() => alert("تم الحذف بنجاح"));
+            if(confirm("هل أنت متأكد من الحذف النهائي؟")) {
+                remove(ref(db, `posts/${type}/${id}`)).then(() => {
+                    alert("تم الحذف بنجاح");
+                    loadAdminList();
+                });
             }
         }
 
-        function renderCard(item, container, id, type, isAdminList = false) {
+        function renderCard(item, container, id, type, isAdmin = false) {
             const card = document.createElement('div');
             card.className = 'card';
             card.innerHTML = `
                 <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#64748b; font-weight:bold;">
-                    <span style="color:#0284c7;">${item.subj}</span><span>${item.dateDisplay}</span>
+                    <span style="color:#0284c7;">${item.subj}</span>
+                    <span>${item.dateDisplay}</span>
                 </div>
                 <h3 style="margin:8px 0;">${item.title}</h3>
-                ${isAdminList ? `<button class="btn-del" onclick="deletePost('${type}', '${id}')">🗑️ حذف المنشور</button>` : '<div style="text-align:center; font-size:0.8rem; color:var(--accent); margin-top:10px;">إضغط للمشاهدة 🔓</div>'}
+                ${isAdmin ? `<button class="btn-del" onclick="deletePost('${type}', '${id}')">🗑️ حذف من السجل</button>` : ''}
             `;
-            if(!isAdminList) {
+            if(!isAdmin) {
                 card.onclick = () => {
                     const body = document.getElementById('details-body');
                     body.innerHTML = `<h2 style="color:var(--accent);">${item.title}</h2><p style="white-space:pre-wrap; color:white;">${item.desc}</p>${item.url ? `<a href="${item.url}" target="_blank" class="btn-link-action">📂 فتح المرفقات (Google Drive)</a>` : ''}`;
@@ -127,9 +151,17 @@
             container.appendChild(card);
         }
 
+        window.loadAdminList = () => {
+            const type = document.getElementById('admin-filter-type').value;
+            onValue(ref(db, `posts/${type}`), (snap) => {
+                const list = document.getElementById('admin-list'); list.innerHTML = '';
+                const data = snap.val(); if(!data) { list.innerHTML = '<p style="text-align:center; color:#94a3b8;">لا يوجد بيانات حالياً</p>'; return; }
+                Object.keys(data).reverse().forEach(id => renderCard(data[id], list, id, type, true));
+            });
+        }
+
         window.loadSection = (path, label) => {
             closeAll();
-            currentType = path;
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('page-title').innerText = label;
             onValue(ref(db, 'posts/' + path), (snap) => {
@@ -139,17 +171,6 @@
             });
             updateCounts();
         }
-
-        // لوحة الإدارة لمشاهدة وحذف الكل
-        function loadAdminList() {
-            const type = document.getElementById('p-type').value;
-            onValue(ref(db, 'posts/' + type), (snap) => {
-                const list = document.getElementById('admin-list'); list.innerHTML = '';
-                const data = snap.val(); if(!data) return;
-                Object.keys(data).reverse().forEach(id => renderCard(data[id], list, id, type, true));
-            });
-        }
-        document.getElementById('p-type').onchange = loadAdminList;
 
         window.loadBySub = (subj) => {
             closeAll();
@@ -188,14 +209,14 @@
                 desc: document.getElementById('p-desc').value || "",
                 url: document.getElementById('p-url').value || "",
                 dateDisplay: `${days[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`
-            }).then(() => { alert("تم النشر!"); loadAdminList(); });
+            }).then(() => { alert("تم النشر بنجاح!"); loadAdminList(); });
         };
 
         document.getElementById('btn-lessons').onclick = () => { loadSection('lessons', 'الدروس اليومية'); document.getElementById('btn-lessons').classList.add('active'); };
         document.getElementById('btn-homework').onclick = () => { loadSection('homework', 'الفروض المنزلية'); document.getElementById('btn-homework').classList.add('active'); };
         document.getElementById('btn-exams').onclick = () => { loadSection('exams', 'الامتحانات'); document.getElementById('btn-exams').classList.add('active'); };
-        document.getElementById('btn-schedule').onclick = () => { closeAll(); document.getElementById('schedule-view').style.display='block'; };
-        document.getElementById('btn-library').onclick = () => { closeAll(); document.getElementById('library-view').style.display='block'; };
+        document.getElementById('btn-schedule').onclick = () => { closeAll(); document.getElementById('schedule-view').style.display='block'; document.getElementById('btn-schedule').classList.add('active'); };
+        document.getElementById('btn-library').onclick = () => { closeAll(); document.getElementById('library-view').style.display='block'; document.getElementById('btn-library').classList.add('active'); };
         document.getElementById('btn-admin').onclick = () => {
             if(localStorage.getItem('isAdmin')) { closeAll(); document.getElementById('admin-panel').style.display='block'; loadAdminList(); }
             else { let c = prompt("الرمز:"); if(c === "CEO7ALI333") { localStorage.setItem('isAdmin','true'); location.reload(); } }
@@ -204,4 +225,5 @@
         loadSection('lessons', 'الدروس اليومية');
     </script>
 </body>
-</html>
+                </html>
+                
