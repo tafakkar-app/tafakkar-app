@@ -30,6 +30,7 @@
 
         #page-title { text-align: center; padding: 15px; font-weight: 900; color: var(--accent); font-size: 1.3rem; }
         .card { background: var(--card-bg); color: var(--card-text); padding: 18px; border-radius: 22px; margin: 12px 18px; border-right: 6px solid #0284c7; cursor: pointer; }
+        
         #details-view, #admin-panel, #schedule-view, #library-view { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 4000; padding: 20px; overflow-y: auto; }
         .btn-back { display: block; width: 100%; background: var(--primary); color: white; border: 2px solid var(--accent); padding: 15px; border-radius: 15px; font-weight: 900; cursor: pointer; margin-bottom: 20px; text-align: center; }
         .btn-link-action { display: block; width: 100%; background: #0284c7; color: white; padding: 15px; border-radius: 12px; text-align: center; text-decoration: none; font-weight: bold; margin-top: 20px; }
@@ -43,7 +44,6 @@
         th, td { border: 1px solid #334155; padding: 12px 8px; text-align: center; }
         th { background: #0284c7; color: white; }
         .search-box { padding: 0 20px 15px; display: none; }
-        .search-box input { border: 1px solid var(--accent); text-align: center; }
     </style>
 </head>
 <body>
@@ -56,7 +56,7 @@
             <div class="stat-card"><span class="stat-num" id="c-exams">0</span><span>امتحانات</span></div>
         </div>
         
-        <div id="search-container" class="search-box"><input type="text" id="lib-search-input" placeholder="🔍 ابحث في الأرشيف..." oninput="filterSearch()"></div>
+        <div id="search-container" class="search-box"><input type="text" id="lib-search-input" placeholder="🔍 ابحث..." oninput="filterSearch()"></div>
         <div id="page-title">الدروس</div>
         <div id="content-area"></div>
 
@@ -71,26 +71,8 @@
     </div>
 
     <div id="details-view"><button onclick="closeAll()" class="btn-back">🔙 عودة</button><div id="details-body"></div></div>
-    
-    <div id="library-view">
-        <button onclick="closeAll()" class="btn-back">🔙 العودة</button>
-        <h2 style="text-align:center; color:var(--accent);">أرشيف المواد</h2>
-        <div class="lib-grid" id="lib-subs"></div>
-    </div>
-    
-    <div id="schedule-view">
-        <button onclick="closeAll()" class="btn-back">🔙 العودة</button>
-        <h2 style="text-align:center; color:var(--accent);">البرنامج الدراسي</h2>
-        <div style="overflow-x:auto; background:#1e293b; padding:10px; border-radius:15px;">
-            <table>
-                <tr><th>اليوم</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
-                <tr><td>الاثنين</td><td>اجتماع</td><td>عربي</td><td>فيزياء</td><td>عربي</td><td>انكليزي</td><td>كيمياء</td><td>انكليزي</td><td>-</td></tr>
-                <tr><td>الثلاثاء</td><td>رياضيات</td><td>رياضيات</td><td>عربي</td><td>كيمياء</td><td>اقتصاد</td><td>فيزياء</td><td>انكليزي</td><td>-</td></tr>
-                <tr><td>الأربعاء</td><td>علوم</td><td>علوم</td><td>جغرافيا</td><td>عربي</td><td>رياضيات</td><td>رياضيات</td><td>تاريخ</td><td>جغرافيا</td></tr>
-                <tr><td>الخميس</td><td>تربية</td><td>تربية</td><td>عربي</td><td>فيزياء</td><td>انكليزي</td><td>انكليزي</td><td>معلوماتية</td><td>رياضيات</td></tr>
-            </table>
-        </div>
-    </div>
+    <div id="library-view"><button onclick="closeAll()" class="btn-back">🔙 العودة</button><div class="lib-grid" id="lib-subs"></div></div>
+    <div id="schedule-view"><button onclick="closeAll()" class="btn-back">🔙 العودة</button><div style="overflow-x:auto;"><table><tr><th>اليوم</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>الاثنين</td><td>اجتماع</td><td>عربي</td><td>فيزياء</td><td>عربي</td><td>انكليزي</td><td>كيمياء</td><td>انكليزي</td><td>-</td></tr><tr><td>الثلاثاء</td><td>رياضيات</td><td>رياضيات</td><td>عربي</td><td>كيمياء</td><td>اقتصاد</td><td>فيزياء</td><td>انكليزي</td><td>-</td></tr><tr><td>الأربعاء</td><td>علوم</td><td>علوم</td><td>جغرافيا</td><td>عربي</td><td>رياضيات</td><td>رياضيات</td><td>تاريخ</td><td>جغرافيا</td></tr><tr><td>الخميس</td><td>تربية</td><td>تربية</td><td>عربي</td><td>فيزياء</td><td>انكليزي</td><td>انكليزي</td><td>معلوماتية</td><td>رياضيات</td></tr></table></div></div>
 
     <div id="admin-panel">
         <button onclick="closeAll()" class="btn-back">🔙 خروج</button>
@@ -100,11 +82,11 @@
             <input type="date" id="p-date">
             <input type="text" id="p-title" placeholder="العنوان">
             <textarea id="p-desc" rows="3" placeholder="التفاصيل..."></textarea>
-            <input type="url" id="p-url" placeholder="رابط Google Drive">
+            <input type="url" id="p-url" placeholder="رابط الملفات">
             <button class="btn-post" id="btn-pub">🚀 نشر الآن</button>
         </div>
         <hr style="margin: 20px 0; border: 0; border-top: 1px solid #334155;">
-        <h3 style="text-align:center; color:#ef4444;">حذف المنشورات</h3>
+        <h3 style="text-align:center;">حذف المنشورات</h3>
         <select id="admin-filter-type" onchange="loadAdminList()"><option value="lessons">الدروس</option><option value="homework">الفروض</option><option value="exams">الامتحانات</option><option value="library">المكتبة</option></select>
         <div id="admin-list"></div>
     </div>
@@ -141,6 +123,11 @@
             document.getElementById('search-container').style.display = 'none';
         }
 
+        // تم التعديل هنا: a - b ليكون الأقدم أولاً (28 ثم 29 ثم 30)
+        function sortItemsByDate(data) {
+            return Object.keys(data).map(id => ({...data[id], id})).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+        }
+
         window.loadSection = (path, label, btnId) => {
             closeAll();
             setActiveNav(btnId);
@@ -148,7 +135,7 @@
             onValue(ref(db, 'posts/' + path), (snap) => {
                 const area = document.getElementById('content-area'); area.innerHTML = '';
                 const data = snap.val(); if(!data) return;
-                Object.keys(data).reverse().forEach(id => renderCard(data[id], area, id, path));
+                sortItemsByDate(data).forEach(item => renderCard(item, area, item.id, path));
             });
             updateCounts();
         }
@@ -161,8 +148,8 @@
             onValue(ref(db, 'posts/library'), (snap) => {
                 const area = document.getElementById('content-area'); area.innerHTML = '';
                 const data = snap.val(); if(!data) return;
-                currentSubData = Object.keys(data).map(id => ({...data[id], id}));
-                currentSubData.filter(i => i.subj === subj).reverse().forEach(item => renderCard(item, area, item.id, 'library'));
+                currentSubData = sortItemsByDate(data);
+                currentSubData.filter(i => i.subj === subj).forEach(item => renderCard(item, area, item.id, 'library'));
             });
         }
 
@@ -179,23 +166,21 @@
             if(!isAdmin) {
                 card.onclick = () => {
                     const body = document.getElementById('details-body');
-                    body.innerHTML = `<h2 style="color:var(--accent);">${item.title}</h2><p style="white-space:pre-wrap; color:white;">${item.desc}</p>${item.url ? `<a href="${item.url}" target="_blank" class="btn-link-action">📂 فتح المرفقات (يتضمن الملفات)</a>` : ''}`;
+                    body.innerHTML = `<h2 style="color:var(--accent);">${item.title}</h2><p style="white-space:pre-wrap; color:white;">${item.desc}</p>${item.url ? `<a href="${item.url}" target="_blank" class="btn-link-action">📂 فتح المرفقات</a>` : ''}`;
                     document.getElementById('details-view').style.display = 'block';
                 };
             }
             container.appendChild(card);
         }
 
-        window.deletePost = (type, id) => {
-            if(confirm("حذف؟")) remove(ref(db, `posts/${type}/${id}`)).then(() => loadAdminList());
-        }
+        window.deletePost = (type, id) => { if(confirm("حذف؟")) remove(ref(db, `posts/${type}/${id}`)).then(() => loadAdminList()); }
 
         window.loadAdminList = () => {
             const type = document.getElementById('admin-filter-type').value;
             onValue(ref(db, `posts/${type}`), (snap) => {
                 const list = document.getElementById('admin-list'); list.innerHTML = '';
                 const data = snap.val(); if(!data) return;
-                Object.keys(data).reverse().forEach(id => renderCard(data[id], list, id, type, true));
+                sortItemsByDate(data).forEach(item => renderCard(item, list, item.id, type, true));
             });
         }
 
@@ -209,19 +194,21 @@
         }
 
         document.getElementById('btn-pub').onclick = () => {
-            const d = document.getElementById('p-date').value ? new Date(document.getElementById('p-date').value) : new Date();
+            const dateVal = document.getElementById('p-date').value;
+            const d = dateVal ? new Date(dateVal) : new Date();
             const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
             push(ref(db, 'posts/' + document.getElementById('p-type').value), {
                 subj: document.getElementById('p-subj').value,
                 title: document.getElementById('p-title').value || "بدون عنوان",
                 desc: document.getElementById('p-desc').value || "",
                 url: document.getElementById('p-url').value || "",
-                dateDisplay: `${days[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`
-            }).then(() => { alert("تم النشر!"); loadAdminList(); });
+                dateDisplay: `${days[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`,
+                timestamp: d.getTime()
+            }).then(() => { alert("تم!"); loadAdminList(); });
         };
 
         document.getElementById('btn-lessons').onclick = () => loadSection('lessons', 'الدروس', 'btn-lessons');
-        document.getElementById('btn-homework').onclick = () => loadSection('homework', 'الفروض المنزلية', 'btn-homework');
+        document.getElementById('btn-homework').onclick = () => loadSection('homework', 'الفروض', 'btn-homework');
         document.getElementById('btn-exams').onclick = () => loadSection('exams', 'الامتحانات', 'btn-exams');
         document.getElementById('btn-schedule').onclick = () => { closeAll(); setActiveNav('btn-schedule'); document.getElementById('schedule-view').style.display='block'; };
         document.getElementById('btn-library').onclick = () => { closeAll(); setActiveNav('btn-library'); document.getElementById('library-view').style.display='block'; };
@@ -233,5 +220,4 @@
         loadSection('lessons', 'الدروس', 'btn-lessons');
     </script>
 </body>
-    </html>
-    
+</html>
