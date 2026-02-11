@@ -76,7 +76,10 @@
             <input type="hidden" id="edit-id">
             <select id="p-type"><option value="lessons">الدروس</option><option value="homework">فروض</option><option value="exams">امتحانات</option><option value="library">المكتبة</option></select>
             <select id="p-subj"></select>
+            <label style="font-size: 0.8rem; color: #94a3b8; margin-right: 5px;">تاريخ النشر (للعرض فقط):</label>
             <input type="date" id="p-date">
+            <label style="font-size: 0.8rem; color: #f59e0b; margin-right: 5px;">حذف تلقائي في (اختياري):</label>
+            <input type="datetime-local" id="p-expiry">
             <input type="text" id="p-title" placeholder="العنوان">
             <textarea id="p-desc" rows="3" placeholder="التفاصيل..."></textarea>
             <input type="url" id="p-url" placeholder="رابط الملفات">
@@ -115,12 +118,20 @@
         function renderCard(item, container, id, type, isAdmin = false) {
             const card = document.createElement('div');
             card.className = 'card';
+            // Check for expiry in UI (Red text if has expiry date for admin)
+            let expiryText = "";
+            if (isAdmin && item.expiryDate) {
+                const exp = new Date(item.expiryDate);
+                expiryText = `<div style="font-size:0.7rem; color:#ef4444; margin-top:5px;">⚠️ يحذف: ${exp.toLocaleDateString('ar-LB')} ${exp.toLocaleTimeString('ar-LB')}</div>`;
+            }
+
             card.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items: center; margin-bottom: 8px;">
                     <span style="color:#1d4ed8; font-size:1.1rem; font-weight:900;">${item.subj}</span>
                     <span style="font-size:0.75rem; color:#64748b; font-weight:bold;">${item.dateDisplay}</span>
                 </div>
                 <h3 style="margin:5px 0;">${item.title}</h3>
+                ${expiryText}
                 ${isAdmin ? `<div style="display:flex; gap:10px; margin-top:10px;">
                     <button class="btn-edit" onclick="startEdit('${type}', '${id}', ${JSON.stringify(item).replace(/"/g, '&quot;')})">📝 تعديل</button>
                     <button class="btn-del" onclick="deletePost('${type}', '${id}')">🗑️ حذف</button>
@@ -139,13 +150,25 @@
             currentSubData.filter(i => i.title.toLowerCase().includes(val) || i.desc.toLowerCase().includes(val)).forEach(item => renderCard(item, area, item.id, 'library'));
         };
 
+        // دالة للتحقق من انتهاء الصلاحية والحذف
+        function checkAndRender(item, id, path, container, isAdmin = false) {
+            if (!isAdmin && item.expiryDate && Date.now() > item.expiryDate) {
+                // إذا لم يكن المدير والوقت انتهى، احذف العنصر من قاعدة البيانات
+                remove(ref(db, `posts/${path}/${id}`));
+                return; // لا تعرضه
+            }
+            renderCard(item, container, id, path, isAdmin);
+        }
+
         window.loadSection = (path, label, btnId) => {
             closeAll(); document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); document.getElementById(btnId).classList.add('active');
             document.getElementById('page-title').innerText = label;
             onValue(ref(db, 'posts/' + path), snap => {
                 const area = document.getElementById('content-area'); area.innerHTML = '';
                 const data = snap.val(); if(!data) return;
-                Object.keys(data).map(id => ({...data[id], id})).sort((a,b) => a.timestamp - b.timestamp).forEach(item => renderCard(item, area, item.id, path));
+                Object.keys(data).map(id => ({...data[id], id})).sort((a,b) => a.timestamp - b.timestamp).forEach(item => {
+                    checkAndRender(item, item.id, path, area);
+                });
             });
             updateCounts();
         };
@@ -157,7 +180,7 @@
                 const area = document.getElementById('content-area'); area.innerHTML = '';
                 const data = snap.val(); if(!data) return;
                 currentSubData = Object.keys(data).map(id => ({...data[id], id})).filter(i => i.subj === subj).sort((a,b) => a.timestamp - b.timestamp);
-                currentSubData.forEach(item => renderCard(item, area, item.id, 'library'));
+                currentSubData.forEach(item => checkAndRender(item, item.id, 'library', area));
             });
         };
 
@@ -179,6 +202,17 @@
             document.getElementById('edit-id').value = id; document.getElementById('p-type').value = type;
             document.getElementById('p-subj').value = item.subj; document.getElementById('p-title').value = item.title;
             document.getElementById('p-desc').value = item.desc; document.getElementById('p-url').value = item.url;
+            
+            // تعيين وقت الحذف في الحقل إذا وجد
+            if(item.expiryDate) {
+                const d = new Date(item.expiryDate);
+                // تنسيق الوقت ليتناسب مع input type="datetime-local"
+                const localISOTime = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+                document.getElementById('p-expiry').value = localISOTime;
+            } else {
+                document.getElementById('p-expiry').value = '';
+            }
+            
             window.scrollTo(0,0);
         };
 
@@ -186,7 +220,21 @@
             const id = document.getElementById('edit-id').value; const type = document.getElementById('p-type').value;
             const d = document.getElementById('p-date').value ? new Date(document.getElementById('p-date').value) : new Date();
             const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-            const postData = { subj: document.getElementById('p-subj').value, title: document.getElementById('p-title').value || "بدون عنوان", desc: document.getElementById('p-desc').value || "", url: document.getElementById('p-url').value || "", dateDisplay: `${days[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`, timestamp: d.getTime() };
+            
+            // معالجة وقت الحذف التلقائي
+            const expiryInput = document.getElementById('p-expiry').value;
+            const expiryDate = expiryInput ? new Date(expiryInput).getTime() : null;
+
+            const postData = { 
+                subj: document.getElementById('p-subj').value, 
+                title: document.getElementById('p-title').value || "بدون عنوان", 
+                desc: document.getElementById('p-desc').value || "", 
+                url: document.getElementById('p-url').value || "", 
+                dateDisplay: `${days[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}`, 
+                timestamp: d.getTime(),
+                expiryDate: expiryDate // حفظ وقت الحذف
+            };
+
             if(id) update(ref(db, `posts/${type}/${id}`), postData).then(() => location.reload());
             else push(ref(db, `posts/${type}`), postData).then(() => location.reload());
         };
